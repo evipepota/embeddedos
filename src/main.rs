@@ -2,6 +2,8 @@
 #![no_std]
 
 use core::panic::PanicInfo;
+use cortex_m_semihosting::hprintln;
+use core::ptr;
 
 #[panic_handler]
 fn panic(_panic: &PanicInfo<'_>) -> ! {
@@ -14,6 +16,26 @@ pub static RESET_VECTOR: unsafe extern "C" fn() -> ! = Reset;
 
 #[no_mangle]
 pub unsafe extern "C" fn Reset() -> ! {
-    let _x = 42;
+    extern "C" {
+        static mut _sbss: u8;
+        static mut _ebss: u8;
+        static mut _sidata: u8;
+        static mut _sdata: u8;
+        static mut _edata: u8;
+    }
+
+    let count = &_ebss as *const u8 as usize - &_sbss as *const u8 as usize;
+    ptr::write_bytes(&mut _sbss as *mut u8, 0, count);
+
+    let count =
+        &_edata as *const u8 as usize - &_sdata as *const u8 as usize;
+    ptr::copy_nonoverlapping(
+        &_sidata as *const u8,
+        &mut _sdata as *mut u8,
+        count
+    );
+
+    hprintln!("Hello World").unwrap();
+
     loop {}
 }
