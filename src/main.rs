@@ -16,7 +16,7 @@ pub static RESET_VECTOR: unsafe extern "C" fn() -> ! = Reset;
 
 #[no_mangle]
 pub unsafe extern "C" fn Reset() -> ! {
-    extern "C" { 
+    extern "C" {
         static mut _sbss: u8;
         static mut _ebss: u8;
         static mut _sidata: u8;
