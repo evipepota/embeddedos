@@ -14,7 +14,7 @@ fn panic(_panic: &PanicInfo<'_>) -> ! {
 #[no_mangle]
 pub static RESET_VECTOR: unsafe extern "C" fn() -> ! = Reset;
 
-#[no_mangle]
+#[no_mangle] 
 pub unsafe extern "C" fn Reset() -> ! {
     extern "C" {
         static mut _sbss: u8;
